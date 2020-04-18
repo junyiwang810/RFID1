@@ -8,8 +8,8 @@ int gled = 7; // optional
 int rled = 4;// optional
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance.
 String card_ID=""; // 
-String password="!qaZxsw2072832" ; // Change It To Your Windows / fb / any Account's Password
-String rfid="165202200230";// UID (unique Id Code Of Your Rfid Tag)
+String password="" ; // Change It To Your Windows / fb / any Account's Password
+String rfid="";// UID (unique Id Code Of Your Rfid Tag)
 void setup() {
   Serial.begin(9600); // Initialize serial communications with the PC
   SPI.begin();  // Init SPI bus
