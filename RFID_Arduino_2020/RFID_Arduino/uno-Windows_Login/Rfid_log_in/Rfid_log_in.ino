@@ -1,11 +1,16 @@
-  //=====================================Walid Mafuj===================================//
+
 uint8_t buf[8] = { 0 };
 #include <SPI.h>
 #include <MFRC522.h> // RFID library
 #define SS_PIN 10 //RX slave select
 #define RST_PIN 9
-int gled = 7; // optional
-int rled = 4;// optional
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+//int gled = 7; // optional
+int led1 = 8;// optional
+int led = 7;
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance.
 String card_ID=""; // 
 String password="" ; // Change It To Your Windows / fb / any Account's Password
@@ -14,8 +19,11 @@ void setup() {
   Serial.begin(9600); // Initialize serial communications with the PC
   SPI.begin();  // Init SPI bus
   mfrc522.PCD_Init(); // Init MFRC522 card
-  pinMode(gled,OUTPUT);
-  pinMode(rled,OUTPUT);
+//  pinMode(gled, OUTPUT);
+  pinMode(led, OUTPUT);
+  pinMode(led1, OUTPUT);
+  pinMode(6, OUTPUT);
+
 }
 
 void loop() {
@@ -31,22 +39,37 @@ void loop() {
   for (byte i = 0; i < mfrc522.uid.size; i++) {
     card_ID += mfrc522.uid.uidByte[i];
   }
-
 //  Serial.println(card_ID);
- 
+
   if(card_ID==rfid){
-    digitalWrite(gled,HIGH);
+    lcd.begin(16, 2);
+    lcd.clear();
+    lcd.print("valid card");
+    digitalWrite(led,HIGH);
+    tone(6, 440, 1000);
     typeLiteralString(password);
     pressKey("enter"); releaseKey("enter");
-    digitalWrite(gled,LOW); delay(200);digitalWrite(gled,HIGH); delay(200);digitalWrite(gled,LOW);
+    delay(1000);
+    digitalWrite(led, LOW);
+    delay(1000);
+    lcd.clear();
+//    digitalWrite(led,LOW); delay(200);digitalWrite(led,HIGH); delay(200);digitalWrite(led,LOW);
   }   
-  if(card_ID!=password){
-    digitalWrite(rled,HIGH);
-    digitalWrite(rled,LOW);
-    delay(200);
-    digitalWrite(rled,HIGH);
-    delay(200);
-    digitalWrite(rled,LOW);
+  if(card_ID!=rfid){
+    lcd.begin(16, 2);
+    lcd.clear();
+    
+    lcd.print("invalid card");
+    tone(6, 262, 1000);
+    digitalWrite(led1, HIGH);
+    delay(1000);
+    digitalWrite(led1, LOW);
+    delay(1000);
+    tone(6, 262, 1000);
+    digitalWrite(led1, HIGH);
+    delay(1000);
+    lcd.clear();
+    digitalWrite(led1, LOW);
   }
   else{ goto cont;}   
  
