@@ -16,6 +16,11 @@ String card_ID=""; //
 String password="" ; // Change It To Your Windows / fb / any Account's Password
 String rfid="";// UID (unique Id Code Of Your Rfid Tag)
 void setup() {
+  lcd.begin(16, 2);
+  lcd.clear();
+  lcd.print("Please scan");
+  lcd.setCursor(2, 1);
+  lcd.print("your card");
   Serial.begin(9600); // Initialize serial communications with the PC
   SPI.begin();  // Init SPI bus
   mfrc522.PCD_Init(); // Init MFRC522 card
@@ -23,11 +28,13 @@ void setup() {
   pinMode(led, OUTPUT);
   pinMode(led1, OUTPUT);
   pinMode(6, OUTPUT);
+  
 
 }
 
 void loop() {
   //look for new card
+
   if ( ! mfrc522.PICC_IsNewCardPresent()) {
     return;
   }
@@ -39,20 +46,27 @@ void loop() {
   for (byte i = 0; i < mfrc522.uid.size; i++) {
     card_ID += mfrc522.uid.uidByte[i];
   }
-//  Serial.println(card_ID);
 
   if(card_ID==rfid){
     lcd.begin(16, 2);
     lcd.clear();
     lcd.print("valid card");
     digitalWrite(led,HIGH);
-    tone(6, 440, 1000);
+    tone(6, 440, 500);
+    delay(500);
+    lcd.setCursor(2, 1);
+    lcd.print("Unlocked");
     typeLiteralString(password);
     pressKey("enter"); releaseKey("enter");
-    delay(1000);
+    delay(300);
     digitalWrite(led, LOW);
-    delay(1000);
+    delay(2000);
     lcd.clear();
+    lcd.begin(16, 2);
+    lcd.clear();
+    lcd.print("Please scan");
+    lcd.setCursor(2, 1);
+    lcd.print("your card");
 //    digitalWrite(led,LOW); delay(200);digitalWrite(led,HIGH); delay(200);digitalWrite(led,LOW);
   }   
   if(card_ID!=rfid){
@@ -60,16 +74,21 @@ void loop() {
     lcd.clear();
     
     lcd.print("invalid card");
-    tone(6, 262, 1000);
+    tone(6, 262, 500);
     digitalWrite(led1, HIGH);
     delay(1000);
     digitalWrite(led1, LOW);
     delay(1000);
-    tone(6, 262, 1000);
+    tone(6, 262, 500);
     digitalWrite(led1, HIGH);
     delay(1000);
     lcd.clear();
     digitalWrite(led1, LOW);
+    lcd.begin(16, 2);
+    lcd.clear();
+    lcd.print("Please scan");
+    lcd.setCursor(2, 1);
+    lcd.print("your card");
   }
   else{ goto cont;}   
  
